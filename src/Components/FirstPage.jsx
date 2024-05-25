@@ -41,7 +41,7 @@ const FirstPage = () => {
         {
           params: {
             q: `${latitude}+${longitude}`,
-            key: "6bfa24d1e9e449f7988514387ccfb172",
+            key: "6bfa24d1e9e449f7988514387ccfb172", // replac with your opencage api key
           },
         }
       );
@@ -64,7 +64,7 @@ const FirstPage = () => {
           lng: longitude,
         },
         headers: {
-          "x-access-token": "openuv-ekc75rlwlggph2-io",
+          "x-access-token": "openuv-ekc75rlwlggph2-io",// replace with your open UV api key
         },
       });
       setUvIndex(response.data.result.uv);
