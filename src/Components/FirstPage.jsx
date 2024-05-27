@@ -6,7 +6,7 @@ const FirstPage = () => {
   const [uvIndex, setUvIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [recommendation, setRecommendation] = useState(null);
+
   const [bgColor, setBgColor] = useState('');
 
   useEffect(() => {
@@ -107,17 +107,7 @@ const FirstPage = () => {
                   {recommendation}
                 </div>
               )}
-              {recommendation === 'Use sunscreen' && (
-                <div className="mt-3">
-                  <h6>Shop Sunscreen Products:</h6>
-                  <ul className="list-unstyled">
-                    <li><a href="https://example.com/sunscreen-product-1" target="_blank" rel="noopener noreferrer"><i className="fas fa-sun"></i> Sunscreen Product 1</a></li>
-                    <li><a href="https://example.com/sunscreen-product-2" target="_blank" rel="noopener noreferrer"><i className="fas fa-sun"></i> Sunscreen Product 2</a></li>
-                    <li><a href="https://example.com/sunscreen-product-3" target="_blank" rel="noopener noreferrer"><i className="fas fa-sun"></i> Sunscreen Product 3</a></li>
-                    {/* Add more sunscreen product links as needed */}
-                  </ul>
-                </div>
-              )}
+            
             </div>
           </div>
         </div>
