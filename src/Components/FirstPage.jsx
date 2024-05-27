@@ -6,8 +6,8 @@ const FirstPage = () => {
   const [uvIndex, setUvIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
   const [bgColor, setBgColor] = useState('');
+  const [recommendation, setRecommendation] = useState('');
 
   useEffect(() => {
     const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
@@ -15,31 +15,39 @@ const FirstPage = () => {
   }, []);
 
   const getCurrentLocation = () => {
+    setLoading(true);
+    setError(null);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
-          await getLocationName(latitude, longitude);
-          await getUvIndex(latitude, longitude);
+          try {
+            await getLocationName(latitude, longitude);
+            await getUvIndex(latitude, longitude);
+          } catch (error) {
+            console.error("Error getting UV index", error);
+            setError("Failed to get UV index");
+            setLoading(false);
+          }
         },
         (error) => {
           console.error("Error getting location", error);
           setError("Failed to get location");
+          setLoading(false);
         }
       );
     } else {
       alert("Geolocation is not supported by this browser");
+      setLoading(false);
     }
   };
 
   const getLocationName = async (latitude, longitude) => {
-    setLoading(true);
-    setError(null);
     try {
       const response = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
         params: {
-          q: `${latitude}+${longitude}`,
+          q: `${latitude},${longitude}`,
           key: '6bfa24d1e9e449f7988514387ccfb172' // Replace with your OpenCage API key
         }
       });
@@ -47,14 +55,10 @@ const FirstPage = () => {
     } catch (error) {
       console.error("Failed to fetch location name", error);
       setError("Failed to fetch location name");
-    } finally {
-      setLoading(false);
     }
   };
 
   const getUvIndex = async (latitude, longitude) => {
-    setLoading(true);
-    setError(null);
     try {
       const response = await axios.get('https://api.openuv.io/api/v1/uv', {
         params: {
@@ -87,27 +91,26 @@ const FirstPage = () => {
               <button
                 className="btn btn-primary mb-3"
                 onClick={getCurrentLocation}
+                disabled={loading}
               >
-                Get Location and UV Index
+                {loading ? 'Getting Location and UV Index...' : 'Get Location and UV Index'}
               </button>
               {locationName && (
                 <div className="alert alert-info bg-light">
                   <strong>Location:</strong> {locationName}
                 </div>
               )}
-              {loading && <div className="alert alert-warning">Loading UV index...</div>}
               {error && <div className="alert alert-danger">{error}</div>}
               {uvIndex !== null && (
-                <div className="alert alert-info bg-light">
-                  <strong>UV Index:</strong> {uvIndex}
+                <div>
+                  <div className="alert alert-info bg-light">
+                    <strong>UV Index:</strong> {uvIndex}
+                  </div>
+                  <div className={`alert ${uvIndex > 3 ? 'alert-danger' : 'alert-success'} bg-light`}>
+                    {recommendation}
+                  </div>
                 </div>
               )}
-              {uvIndex !== null && (
-                <div className={`alert ${uvIndex > 3 ? 'alert-danger' : 'alert-success'} bg-light`}>
-                  {recommendation}
-                </div>
-              )}
-            
             </div>
           </div>
         </div>
